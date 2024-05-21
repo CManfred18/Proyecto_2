@@ -13,7 +13,7 @@ COLOR_CUADRICULA = (200, 200, 200)
 COLOR_BOTON = (180, 180, 180)
 COLOR_TEXTO = (0, 0, 0)
 COLOR_NEGRO = (0, 0, 0)
-COLOR_BLANCO = (255, 255, 255)
+COLOR_VERDE = (25, 111, 61)
 COLOR_ROJO = (192, 57, 43)
 COLOR_AMARILLO = (247, 220, 111)
 COLOR_AZUL = (41, 128, 185)
@@ -37,6 +37,10 @@ class PixelArt:
         fila = y // TAMAÑO_PIXEL
         if 0 <= columna < self.columnas and 0 <= fila < self.filas:
             self.matriz[fila][columna] = color
+            
+    def borrar_todo(self):
+        self.matriz = [[COLOR_FONDO for _ in range(self.columnas)] for _ in range(self.filas)]
+
 
 # Función para dibujar botones
 def dibujar_boton(pantalla, rect, color, texto):
@@ -56,10 +60,12 @@ pixel_art = PixelArt(filas, columnas)
 
 # Definimos los botones
 boton_color_negro = pygame.Rect(850, 50, 110, 50)
-boton_color_blanco = pygame.Rect(850, 120, 110, 50)
+boton_color_verde = pygame.Rect(850, 120, 110, 50)
 boton_color_rojo = pygame.Rect(850, 190, 110, 50)
 boton_color_amarillo = pygame.Rect(850, 260, 110, 50)
 boton_color_azul = pygame.Rect(850, 330, 110, 50)
+boton_borrar = pygame.Rect(850, 400, 110, 50)
+boton_borrar_todo = pygame.Rect(850, 470, 110, 50)
 
 # Bucle principal del juego
 corriendo = True
@@ -74,14 +80,18 @@ while corriendo:
                 x, y = evento.pos
                 if boton_color_negro.collidepoint(x, y):
                     color_actual = COLOR_NEGRO
-                elif boton_color_blanco.collidepoint(x, y):
-                    color_actual = COLOR_BLANCO
+                elif boton_color_verde.collidepoint(x, y):
+                    color_actual = COLOR_VERDE
                 elif boton_color_rojo.collidepoint(x, y):
                     color_actual = COLOR_ROJO
                 elif boton_color_amarillo.collidepoint(x, y):
                     color_actual = COLOR_AMARILLO
                 elif boton_color_azul.collidepoint(x, y):
                     color_actual = COLOR_AZUL
+                elif boton_borrar.collidepoint(x, y):
+                    color_actual = COLOR_FONDO
+                elif boton_borrar_todo.collidepoint(x, y):
+                    pixel_art.borrar_todo()
                 else:
                     if x < ANCHO_VENTANA - 200:  # Asegura que el clic esté dentro de la cuadrícula
                         pixel_art.cambiar_color_pixel(x, y, color_actual)
@@ -94,10 +104,12 @@ while corriendo:
 
     # Dibujamos los botones
     dibujar_boton(ventana, boton_color_negro, COLOR_BOTON, "Color Negro")
-    dibujar_boton(ventana, boton_color_blanco, COLOR_BOTON, "Color Blanco")
+    dibujar_boton(ventana, boton_color_verde, COLOR_BOTON, "Color Verde")
     dibujar_boton(ventana, boton_color_rojo, COLOR_BOTON, "Color Rojo")
     dibujar_boton(ventana, boton_color_amarillo, COLOR_BOTON, "Color Amarillo")
     dibujar_boton(ventana, boton_color_azul, COLOR_BOTON, "Color azul")
+    dibujar_boton(ventana, boton_borrar, COLOR_BOTON, "Borrar")
+    dibujar_boton(ventana, boton_borrar_todo, COLOR_BOTON, "Borrar todo")
 
 
     # Actualizamos la pantalla
