@@ -12,11 +12,7 @@ COLOR_FONDO = (255, 255, 255)
 COLOR_CUADRICULA = (200, 200, 200)
 COLOR_BOTON = (180, 180, 180)
 COLOR_TEXTO = (0, 0, 0)
-COLOR_NEGRO = (0, 0, 0)
-COLOR_VERDE = (25, 111, 61)
-COLOR_ROJO = (192, 57, 43)
-COLOR_AMARILLO = (247, 220, 111)
-COLOR_AZUL = (41, 128, 185)
+
 
 # Clase para manejar el Píxel Art
 class PixelArt:
@@ -45,9 +41,13 @@ class PixelArt:
 # Función para dibujar botones
 def dibujar_boton(pantalla, rect, color, texto):
     pygame.draw.rect(pantalla, color, rect)
-    fuente = pygame.font.Font(None, 20)
+    fuente = pygame.font.Font(None, 24)
     texto_renderizado = fuente.render(texto, True, COLOR_TEXTO)
     pantalla.blit(texto_renderizado, (rect.x + 10, rect.y + 10))
+    
+def dibujar_boton_con_boton(pantalla, rect, color, imagen):
+    pygame.draw.rect(pantalla, color, rect)
+    pantalla.blit(imagen, (rect.x, rect.y))
 
 # Inicializamos la ventana
 ventana = pygame.display.set_mode((ANCHO_VENTANA, ALTO_VENTANA))
@@ -55,21 +55,35 @@ pygame.display.set_caption('Editor de Pixel Art')
 
 # Creamos una instancia de PixelArt
 filas = ALTO_VENTANA // TAMAÑO_PIXEL
-columnas = (ANCHO_VENTANA - 150) // TAMAÑO_PIXEL  # Deja espacio para los botones
+columnas = (ANCHO_VENTANA - 200) // TAMAÑO_PIXEL  # Deja espacio para los botones
 pixel_art = PixelArt(filas, columnas)
 
 # Definimos los botones
-boton_color_negro = pygame.Rect(850, 50, 110, 50)
-boton_color_verde = pygame.Rect(850, 120, 110, 50)
-boton_color_rojo = pygame.Rect(850, 190, 110, 50)
-boton_color_amarillo = pygame.Rect(850, 260, 110, 50)
-boton_color_azul = pygame.Rect(850, 330, 110, 50)
-boton_borrar = pygame.Rect(850, 400, 110, 50)
-boton_borrar_todo = pygame.Rect(850, 470, 110, 50)
+boton_color_negro = pygame.Rect(850, 50, 50, 50)
+boton_color_verde = pygame.Rect(910, 50, 50, 50)
+boton_color_rojo = pygame.Rect(850, 120, 50, 50)
+boton_color_amarillo = pygame.Rect(910, 120, 50, 50)
+boton_color_azul = pygame.Rect(850, 190, 50, 50)
+boton_color_morado = pygame.Rect(910, 190, 50, 50)
+boton_color_naranja = pygame.Rect(850, 260, 50, 50)
+boton_color_gris = pygame.Rect(910, 260, 50, 50)
+boton_color_celeste = pygame.Rect(850, 330, 50, 50)
+boton_color_rosa = pygame.Rect(910, 330, 50, 50)
+boton_borrar = pygame.Rect(850, 400, 50, 50)
+boton_borrar_todo = pygame.Rect(850, 470, 50, 50)
+
+# Cargamos imagenes
+imagen_borrar = pygame.image.load("Imagenes/Borrar_icono.png")
+imagen_cargar = pygame.image.load("Imagenes/Cargar_icono.png")
+imagen_guardar = pygame.image.load("Imagenes/Guardar_icono.png")
+imagen_restablecer = pygame.image.load("Imagenes/Restablecer_icono.png")
+imagen_rotar_derecha = pygame.image.load("Imagenes/Rotar_icono_derecha.png")
+imagen_rotar_izquierda = pygame.image.load("Imagenes/Rotar_icono_izquierda.png")
+
 
 # Bucle principal del juego
 corriendo = True
-color_actual = COLOR_NEGRO
+color_actual = (0, 0, 0)
 
 while corriendo:
     for evento in pygame.event.get():
@@ -79,17 +93,27 @@ while corriendo:
             if evento.button == 1:  # Boton izquierdo del raton
                 x, y = evento.pos
                 if boton_color_negro.collidepoint(x, y):
-                    color_actual = COLOR_NEGRO
+                    color_actual = (0, 0, 0)
                 elif boton_color_verde.collidepoint(x, y):
-                    color_actual = COLOR_VERDE
+                    color_actual = (25, 111, 61)
                 elif boton_color_rojo.collidepoint(x, y):
-                    color_actual = COLOR_ROJO
+                    color_actual = (192, 57, 43)
                 elif boton_color_amarillo.collidepoint(x, y):
-                    color_actual = COLOR_AMARILLO
+                    color_actual = (247, 220, 111)
                 elif boton_color_azul.collidepoint(x, y):
-                    color_actual = COLOR_AZUL
+                    color_actual = (41, 128, 185)
+                elif boton_color_morado.collidepoint(x, y):
+                    color_actual = (125, 60, 152)
+                elif boton_color_naranja.collidepoint(x, y):
+                    color_actual = (230, 126, 34)
+                elif boton_color_gris.collidepoint(x, y):
+                    color_actual = (86, 101, 115)
+                elif boton_color_rosa.collidepoint(x, y):
+                    color_actual = (217, 136, 128)
+                elif boton_color_celeste.collidepoint(x, y):
+                    color_actual = (174, 214, 241 )
                 elif boton_borrar.collidepoint(x, y):
-                    color_actual = COLOR_FONDO
+                    color_actual = (255, 255, 255)
                 elif boton_borrar_todo.collidepoint(x, y):
                     pixel_art.borrar_todo()
                 else:
@@ -103,14 +127,18 @@ while corriendo:
     pixel_art.dibujar(ventana)
 
     # Dibujamos los botones
-    dibujar_boton(ventana, boton_color_negro, COLOR_BOTON, "Color Negro")
-    dibujar_boton(ventana, boton_color_verde, COLOR_BOTON, "Color Verde")
-    dibujar_boton(ventana, boton_color_rojo, COLOR_BOTON, "Color Rojo")
-    dibujar_boton(ventana, boton_color_amarillo, COLOR_BOTON, "Color Amarillo")
-    dibujar_boton(ventana, boton_color_azul, COLOR_BOTON, "Color azul")
-    dibujar_boton(ventana, boton_borrar, COLOR_BOTON, "Borrar")
-    dibujar_boton(ventana, boton_borrar_todo, COLOR_BOTON, "Borrar todo")
-
+    dibujar_boton(ventana, boton_color_negro, (0, 0, 0), "")
+    dibujar_boton(ventana, boton_color_verde, (25, 111, 61), "")
+    dibujar_boton(ventana, boton_color_rojo, (192, 57, 43), "")
+    dibujar_boton(ventana, boton_color_amarillo, (247, 220, 111), "")
+    dibujar_boton(ventana, boton_color_azul, (41, 128, 185), "")
+    dibujar_boton(ventana, boton_color_morado, (125, 60, 152), "")
+    dibujar_boton(ventana, boton_color_naranja, (230, 126, 34), "")
+    dibujar_boton(ventana, boton_color_gris, (86, 101, 115), "")
+    dibujar_boton(ventana, boton_color_rosa, (217, 136, 128), "")
+    dibujar_boton(ventana, boton_color_celeste, (174, 214, 241 ), "")
+    dibujar_boton_con_boton(ventana, boton_borrar, COLOR_BOTON, imagen_borrar)
+    dibujar_boton_con_boton(ventana, boton_borrar_todo, COLOR_BOTON, imagen_restablecer)
 
     # Actualizamos la pantalla
     pygame.display.flip()
