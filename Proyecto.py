@@ -38,12 +38,18 @@ class PixelArt:
         self.matriz = [[COLOR_FONDO for _ in range(self.columnas)] for _ in range(self.filas)]
         
     def rotar_derecha(self):
-        self.matriz = [list(row) for row in zip(*self.matriz[::-1])]
+        self.matriz = [list(filas) for filas in zip(*self.matriz[::-1])]
         self.filas, self.columnas = self.columnas, self.filas
         
     def rotar_izquierda(self):
-        self.matriz = [list(row) for row in zip(*self.matriz)][::-1]
+        self.matriz = [list(filas) for filas in zip(*self.matriz)][::-1]
         self.filas, self.columnas = self.columnas, self.filas
+        
+    def reflejo_horizontal(self):
+        self.matriz = [fila[::-1] for fila in self.matriz]
+    
+    def reflejo_vertical(self):
+        self.matriz = self.matriz[::-1]
 
 
 # Función para dibujar botones
@@ -81,6 +87,8 @@ boton_borrar = pygame.Rect(650, 400, 50, 50)
 boton_borrar_todo = pygame.Rect(710, 400, 50, 50)
 boton_rotar_derecha = pygame.Rect(650, 470, 50, 50)
 boton_rotar_izquierda = pygame.Rect(710, 470, 50, 50)
+boton_reflejo_horizontal = pygame.Rect(650, 540, 50, 50)
+boton_reflejo_vertical = pygame.Rect(710, 540, 50, 50)
 
 # Cargamos imagenes
 imagen_borrar = pygame.image.load("Imagenes/Borrar_icono.png")
@@ -89,6 +97,8 @@ imagen_guardar = pygame.image.load("Imagenes/Guardar_icono.png")
 imagen_restablecer = pygame.image.load("Imagenes/Restablecer_icono.png")
 imagen_rotar_derecha = pygame.image.load("Imagenes/Rotar_icono_derecha.png")
 imagen_rotar_izquierda = pygame.image.load("Imagenes/Rotar_icono_izquierda.png")
+imagen_reflejo_horizontal = pygame.image.load("Imagenes/Reflejo_icono_horizontal.png")
+imagen_reflejo_vertical = pygame.image.load("Imagenes/Reflejo_icono_vertical.png")
 
 
 # Bucle principal del juego
@@ -130,6 +140,10 @@ while corriendo:
                     pixel_art.rotar_derecha()
                 elif boton_rotar_izquierda.collidepoint(x, y):
                     pixel_art.rotar_izquierda()
+                elif boton_reflejo_horizontal.collidepoint(x, y):
+                    pixel_art.reflejo_horizontal()
+                elif boton_reflejo_vertical.collidepoint(x, y):
+                    pixel_art.reflejo_vertical()
                 else:
                     if x < ANCHO_VENTANA - 200:  # Asegura que el clic esté dentro de la cuadrícula
                         pixel_art.cambiar_color_pixel(x, y, color_actual)
@@ -155,6 +169,8 @@ while corriendo:
     dibujar_boton_con_boton(ventana, boton_borrar_todo, COLOR_BOTON, imagen_restablecer)
     dibujar_boton_con_boton(ventana, boton_rotar_derecha, COLOR_BOTON, imagen_rotar_derecha)
     dibujar_boton_con_boton(ventana, boton_rotar_izquierda, COLOR_BOTON, imagen_rotar_izquierda)
+    dibujar_boton_con_boton(ventana, boton_reflejo_horizontal, COLOR_BOTON, imagen_reflejo_horizontal)
+    dibujar_boton_con_boton(ventana, boton_reflejo_vertical, COLOR_BOTON, imagen_reflejo_vertical)
 
     # Actualizamos la pantalla
     pygame.display.flip()
