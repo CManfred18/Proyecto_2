@@ -5,7 +5,7 @@ import sys
 pygame.init()
 
 # Definimos algunas constantes
-ANCHO_VENTANA = 1000
+ANCHO_VENTANA = 800
 ALTO_VENTANA = 600
 TAMAÑO_PIXEL = 20
 COLOR_FONDO = (255, 255, 255)
@@ -36,17 +36,25 @@ class PixelArt:
             
     def borrar_todo(self):
         self.matriz = [[COLOR_FONDO for _ in range(self.columnas)] for _ in range(self.filas)]
+        
+    def rotar_derecha(self):
+        self.matriz = [list(row) for row in zip(*self.matriz[::-1])]
+        self.filas, self.columnas = self.columnas, self.filas
+        
+    def rotar_izquierda(self):
+        self.matriz = [list(row) for row in zip(*self.matriz)][::-1]
+        self.filas, self.columnas = self.columnas, self.filas
 
 
 # Función para dibujar botones
 def dibujar_boton(pantalla, rect, color, texto):
-    pygame.draw.rect(pantalla, color, rect)
+    pygame.draw.rect(pantalla, color, rect, 0, 10)
     fuente = pygame.font.Font(None, 24)
     texto_renderizado = fuente.render(texto, True, COLOR_TEXTO)
     pantalla.blit(texto_renderizado, (rect.x + 10, rect.y + 10))
     
 def dibujar_boton_con_boton(pantalla, rect, color, imagen):
-    pygame.draw.rect(pantalla, color, rect)
+    pygame.draw.rect(pantalla, color, rect, 0, 10)
     pantalla.blit(imagen, (rect.x, rect.y))
 
 # Inicializamos la ventana
@@ -59,18 +67,20 @@ columnas = (ANCHO_VENTANA - 200) // TAMAÑO_PIXEL  # Deja espacio para los boton
 pixel_art = PixelArt(filas, columnas)
 
 # Definimos los botones
-boton_color_negro = pygame.Rect(850, 50, 50, 50)
-boton_color_verde = pygame.Rect(910, 50, 50, 50)
-boton_color_rojo = pygame.Rect(850, 120, 50, 50)
-boton_color_amarillo = pygame.Rect(910, 120, 50, 50)
-boton_color_azul = pygame.Rect(850, 190, 50, 50)
-boton_color_morado = pygame.Rect(910, 190, 50, 50)
-boton_color_naranja = pygame.Rect(850, 260, 50, 50)
-boton_color_gris = pygame.Rect(910, 260, 50, 50)
-boton_color_celeste = pygame.Rect(850, 330, 50, 50)
-boton_color_rosa = pygame.Rect(910, 330, 50, 50)
-boton_borrar = pygame.Rect(850, 400, 50, 50)
-boton_borrar_todo = pygame.Rect(850, 470, 50, 50)
+boton_color_negro = pygame.Rect(650, 50, 50, 50)
+boton_color_verde = pygame.Rect(710, 50, 50, 50)
+boton_color_rojo = pygame.Rect(650, 120, 50, 50)
+boton_color_amarillo = pygame.Rect(710, 120, 50, 50)
+boton_color_azul = pygame.Rect(650, 190, 50, 50)
+boton_color_morado = pygame.Rect(710, 190, 50, 50)
+boton_color_naranja = pygame.Rect(650, 260, 50, 50)
+boton_color_gris = pygame.Rect(710, 260, 50, 50)
+boton_color_celeste = pygame.Rect(650, 330, 50, 50)
+boton_color_rosa = pygame.Rect(710, 330, 50, 50)
+boton_borrar = pygame.Rect(650, 400, 50, 50)
+boton_borrar_todo = pygame.Rect(710, 400, 50, 50)
+boton_rotar_derecha = pygame.Rect(650, 470, 50, 50)
+boton_rotar_izquierda = pygame.Rect(710, 470, 50, 50)
 
 # Cargamos imagenes
 imagen_borrar = pygame.image.load("Imagenes/Borrar_icono.png")
@@ -116,6 +126,10 @@ while corriendo:
                     color_actual = (255, 255, 255)
                 elif boton_borrar_todo.collidepoint(x, y):
                     pixel_art.borrar_todo()
+                elif boton_rotar_derecha.collidepoint(x, y):
+                    pixel_art.rotar_derecha()
+                elif boton_rotar_izquierda.collidepoint(x, y):
+                    pixel_art.rotar_izquierda()
                 else:
                     if x < ANCHO_VENTANA - 200:  # Asegura que el clic esté dentro de la cuadrícula
                         pixel_art.cambiar_color_pixel(x, y, color_actual)
@@ -139,6 +153,8 @@ while corriendo:
     dibujar_boton(ventana, boton_color_celeste, (174, 214, 241 ), "")
     dibujar_boton_con_boton(ventana, boton_borrar, COLOR_BOTON, imagen_borrar)
     dibujar_boton_con_boton(ventana, boton_borrar_todo, COLOR_BOTON, imagen_restablecer)
+    dibujar_boton_con_boton(ventana, boton_rotar_derecha, COLOR_BOTON, imagen_rotar_derecha)
+    dibujar_boton_con_boton(ventana, boton_rotar_izquierda, COLOR_BOTON, imagen_rotar_izquierda)
 
     # Actualizamos la pantalla
     pygame.display.flip()
