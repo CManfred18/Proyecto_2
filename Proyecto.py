@@ -73,12 +73,12 @@ boton_borrar = pygame.Rect(850, 400, 50, 50)
 boton_borrar_todo = pygame.Rect(850, 470, 50, 50)
 
 # Cargamos imagenes
-imagen_borrar = pygame.image.load("Imagenes/Borrar_icono.png")
-imagen_cargar = pygame.image.load("Imagenes/Cargar_icono.png")
-imagen_guardar = pygame.image.load("Imagenes/Guardar_icono.png")
-imagen_restablecer = pygame.image.load("Imagenes/Restablecer_icono.png")
-imagen_rotar_derecha = pygame.image.load("Imagenes/Rotar_icono_derecha.png")
-imagen_rotar_izquierda = pygame.image.load("Imagenes/Rotar_icono_izquierda.png")
+imagen_borrar = pygame.image.load("borrar_icono.png")
+imagen_cargar = pygame.image.load("cargar_icono.png")
+imagen_guardar = pygame.image.load("guardar_icono.png")
+imagen_restablecer = pygame.image.load("restablecer_icono.png")
+imagen_rotar_derecha = pygame.image.load("rotar_derecha_icono.png")
+imagen_rotar_izquierda = pygame.image.load("rotar_izquierda_icono.png")
 
 
 # Bucle principal del juego
