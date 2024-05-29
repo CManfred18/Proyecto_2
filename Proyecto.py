@@ -1,5 +1,6 @@
 import pygame
 import sys
+import os
 
 # Inicializamos Pygame
 pygame.init()
@@ -77,9 +78,13 @@ class PixelArt:
                 elif color == (217, 136, 128):
                     ascii_art += "9"
                 else:
-                    ascii_art += "."
+                    ascii_art += " "
             ascii_art += "\n"  # Nueva línea después de cada fila
         return ascii_art
+    
+    def mostrar_matriz_numerica(self):
+        ascii_art = pixel_art.convertir_a_ascii_art()
+        print(ascii_art)
 
 
 # Función para dibujar botones
@@ -119,6 +124,8 @@ boton_rotar_derecha = pygame.Rect(640, 370, 50, 50)
 boton_rotar_izquierda = pygame.Rect(710, 370, 50, 50)
 boton_reflejo_horizontal = pygame.Rect(640, 430, 50, 50)
 boton_reflejo_vertical = pygame.Rect(710, 430, 50, 50)
+boton_mostrar_matriz = pygame.Rect(640, 490, 50, 50)
+
 
 # Cargamos imagenes
 imagen_borrar = pygame.image.load("Imagenes/Borrar_icono.png")
@@ -129,7 +136,6 @@ imagen_rotar_derecha = pygame.image.load("Imagenes/Rotar_icono_derecha.png")
 imagen_rotar_izquierda = pygame.image.load("Imagenes/Rotar_icono_izquierda.png")
 imagen_reflejo_horizontal = pygame.image.load("Imagenes/Reflejo_icono_horizontal.png")
 imagen_reflejo_vertical = pygame.image.load("Imagenes/Reflejo_icono_vertical.png")
-
 
 # Bucle principal del juego
 corriendo = True
@@ -174,9 +180,16 @@ while corriendo:
                     pixel_art.reflejo_horizontal()
                 elif boton_reflejo_vertical.collidepoint(x, y):
                     pixel_art.reflejo_vertical()
+                elif boton_mostrar_matriz.collidepoint(x, y):
+                    pixel_art.mostrar_matriz_numerica()
                 else:
                     if x < ANCHO_VENTANA - 200:  # Asegura que el clic esté dentro de la cuadrícula
-                        pixel_art.cambiar_color_pixel(x, y, color_actual)
+                        pixel_art.cambiar_color_pixel(x, y, color_actual)    
+        elif evento.type == pygame.KEYDOWN:
+            if evento.key == pygame.K_BACKSPACE:
+                user_text = user_text[:-1]
+            else:
+                user_text += evento.unicode
 
     # Limpiamos la ventana
     ventana.fill(COLOR_FONDO)
@@ -201,12 +214,11 @@ while corriendo:
     dibujar_boton_con_boton(ventana, boton_rotar_izquierda, COLOR_BOTON, imagen_rotar_izquierda)
     dibujar_boton_con_boton(ventana, boton_reflejo_horizontal, COLOR_BOTON, imagen_reflejo_horizontal)
     dibujar_boton_con_boton(ventana, boton_reflejo_vertical, COLOR_BOTON, imagen_reflejo_vertical)
-    
-    
-    
+    dibujar_boton(ventana, boton_mostrar_matriz, COLOR_BOTON, "Mostrar Matriz")
 
     # Actualizamos la pantalla
     pygame.display.flip()
+
 ascii_art = pixel_art.convertir_a_ascii_art()
 
 # Imprimir en la consola
