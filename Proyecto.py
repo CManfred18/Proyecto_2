@@ -202,7 +202,46 @@ class PixelArt:
                         self.matriz[fila][columna] = (217, 136, 128)
                     else:
                         self.matriz[fila][columna] = COLOR_FONDO
+                        
+    def entrada_texto(self, pantalla, mensaje):
+        fuente = pygame.font.Font(None, 24)
+        input_box = pygame.Rect(300, 268, 140, 32)
+        color_inactivo = pygame.Color(217, 136, 128)
+        color_activo = pygame.Color(169, 223, 191)
+        color = color_inactivo
+        activo = False
+        texto = ''
+        hecho = False
 
+        while not hecho:
+            for evento in pygame.event.get():
+                if evento.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+                elif evento.type == pygame.MOUSEBUTTONDOWN:
+                    if input_box.collidepoint(evento.pos):
+                        activo = not activo
+                    else:
+                        activo = False
+                    color = color_activo if activo else color_inactivo
+                elif evento.type == pygame.KEYDOWN:
+                    if activo:
+                        if evento.key == pygame.K_RETURN:
+                            hecho = True
+                        elif evento.key == pygame.K_BACKSPACE:
+                            texto = texto[:-1]
+                        else:
+                            texto += evento.unicode
+
+            pantalla.fill(COLOR_FONDO)
+            txt_superficie = fuente.render(mensaje, True, color)
+            pantalla.blit(txt_superficie, (input_box.x, input_box.y-20))
+            nombre = fuente.render(texto, True, color)
+            pantalla.blit(nombre, (input_box.x+6, input_box.y+8))
+            pygame.draw.rect(pantalla, color, input_box, 2)
+            pygame.display.flip()
+
+        return texto
 
 # Función para dibujar botones
 def dibujar_boton(pantalla, rect, color, texto):
@@ -225,27 +264,30 @@ columnas = (ANCHO_VENTANA - 200) // TAMAÑO_PIXEL  # Deja espacio para los boton
 pixel_art = PixelArt(filas, columnas)
 
 # Definimos los botones
-boton_color_negro = pygame.Rect(640, 10, 50, 50)
-boton_color_verde = pygame.Rect(710, 10, 50, 50)
-boton_color_rojo = pygame.Rect(640, 70, 50, 50)
-boton_color_amarillo = pygame.Rect(710, 70, 50, 50)
-boton_color_azul = pygame.Rect(640, 130, 50, 50)
-boton_color_morado = pygame.Rect(710, 130, 50, 50)
-boton_color_naranja = pygame.Rect(640, 190, 50, 50)
-boton_color_gris = pygame.Rect(710, 190, 50, 50)
-boton_color_celeste = pygame.Rect(640, 250, 50, 50)
-boton_color_rosa = pygame.Rect(710, 250, 50, 50)
-boton_borrar = pygame.Rect(640, 310, 50, 50)
-boton_borrar_todo = pygame.Rect(710, 310, 50, 50)
-boton_rotar_derecha = pygame.Rect(640, 370, 50, 50)
-boton_rotar_izquierda = pygame.Rect(710, 370, 50, 50)
-boton_reflejo_horizontal = pygame.Rect(640, 430, 50, 50)
-boton_reflejo_vertical = pygame.Rect(710, 430, 50, 50)
-boton_mostrar_matriz = pygame.Rect(640, 490, 50, 50)
-boton_negativo = pygame.Rect(710, 490, 50, 50)
-boton_alto_contraste = pygame.Rect(640, 550, 50, 50)
-boton_guardar = pygame.Rect(710, 550, 50, 50)
-boton_cargar = pygame.Rect(730, 370, 50, 50)
+boton_color_negro = pygame.Rect(610, 10, 50, 50)
+boton_color_verde = pygame.Rect(610, 70, 50, 50)
+boton_color_rojo = pygame.Rect(610, 130, 50, 50)
+boton_color_amarillo = pygame.Rect(610, 190, 50, 50)
+boton_color_azul = pygame.Rect(610, 250, 50, 50)
+boton_color_morado = pygame.Rect(610, 310, 50, 50)
+boton_color_naranja = pygame.Rect(610, 370, 50, 50)
+boton_color_gris = pygame.Rect(610, 430, 50, 50)
+boton_color_celeste = pygame.Rect(610, 490, 50, 50)
+boton_color_rosa = pygame.Rect(610, 550, 50, 50)
+
+
+
+boton_borrar = pygame.Rect(670, 10, 50, 50)
+boton_borrar_todo = pygame.Rect(670, 70, 50, 50)
+boton_rotar_derecha = pygame.Rect(670, 130, 50, 50)
+boton_rotar_izquierda = pygame.Rect(670, 190, 50, 50)
+boton_reflejo_horizontal = pygame.Rect(670, 250, 50, 50)
+boton_reflejo_vertical = pygame.Rect(670, 310, 50, 50)
+boton_mostrar_matriz = pygame.Rect(670, 370, 50, 50)
+boton_negativo = pygame.Rect(670, 430, 50, 50)
+boton_alto_contraste = pygame.Rect(670, 490, 50, 50)
+boton_guardar = pygame.Rect(670, 550, 50, 50)
+boton_cargar = pygame.Rect(730, 10, 50, 50)
 
 
 # Cargamos imagenes
@@ -306,14 +348,19 @@ while corriendo:
                     pixel_art.reflejo_vertical()
                 elif boton_mostrar_matriz.collidepoint(x, y):
                     pixel_art.mostrar_matriz_numerica()
-                elif boton_negativo.collidepoint(x, y):  # Lógica para el botón de negativo
+                elif boton_negativo.collidepoint(x, y):
                     pixel_art.negativo()
-                elif boton_alto_contraste.collidepoint(x, y):  # Lógica para el botón de alto contraste
+                elif boton_alto_contraste.collidepoint(x, y):
                     pixel_art.alto_contraste()
-                elif boton_guardar.collidepoint(x, y):  # Lógica para el botón de guardar
-                    pixel_art.guardar_matriz("matriz_pixel_art.txt")
+                elif boton_guardar.collidepoint(x, y):
+                    nombre_archivo = pixel_art.entrada_texto(ventana, "Nombre del archivo: ")
+                    pixel_art.guardar_matriz(nombre_archivo + ".txt")
                 elif boton_cargar.collidepoint(x, y):
-                    pixel_art.cargar_matriz("matriz_pixel_art.txt")
+                    nombre_archivo = pixel_art.entrada_texto(ventana, "Nombre del archivo: ")
+                    if os.path.exists(nombre_archivo + ".txt"):
+                        pixel_art.cargar_matriz(nombre_archivo + ".txt")
+                    else:
+                        print(f"El archivo {nombre_archivo}.txt no existe.")
                 else:
                     if x < ANCHO_VENTANA - 200:  # Asegura que el clic esté dentro de la cuadrícula
                         pixel_art.cambiar_color_pixel(x, y, color_actual)    
@@ -346,7 +393,7 @@ while corriendo:
     dibujar_boton_con_imagen(ventana, boton_negativo, COLOR_BOTON, imagen_negativo)
     dibujar_boton_con_imagen(ventana, boton_alto_contraste, COLOR_BOTON, imagen_alto_contraste) 
     dibujar_boton_con_imagen(ventana, boton_guardar, COLOR_BOTON, imagen_guardar)
-    dibujar_boton_con_imagen(ventana, boton_cargar, COLOR_FONDO, imagen_cargar)
+    dibujar_boton_con_imagen(ventana, boton_cargar, COLOR_BOTON, imagen_cargar)
 
     # Actualizamos la pantalla
     pygame.display.flip()
