@@ -147,6 +147,61 @@ class PixelArt:
                     self.matriz[fila][columna] = (0, 0, 0)  # 0
                 elif color in [(125, 60, 152), (230, 126, 34), (86, 101, 115), (174, 214, 241), (217, 136, 128)]:  # Colores de 5 a 9
                     self.matriz[fila][columna] = (217, 136, 128)  # 9
+                    
+    def guardar_matriz(self, nombre_archivo):
+        with open(nombre_archivo, 'w') as archivo:
+            for fila in self.matriz:
+                for color in fila:
+                    if color == (0, 0, 0):
+                        archivo.write("0")
+                    elif color == (25, 111, 61):
+                        archivo.write("1")
+                    elif color == (192, 57, 43):
+                        archivo.write("2")
+                    elif color == (247, 220, 111):
+                        archivo.write("3")
+                    elif color == (41, 128, 185):
+                        archivo.write("4")
+                    elif color == (125, 60, 152):
+                        archivo.write("5")
+                    elif color == (230, 126, 34):
+                        archivo.write("6")
+                    elif color == (86, 101, 115):
+                        archivo.write("7")
+                    elif color == (174, 214, 241):
+                        archivo.write("8")
+                    elif color == (217, 136, 128):
+                        archivo.write("9")
+                    else:
+                        archivo.write("_")
+                archivo.write("\n")
+                
+    def cargar_matriz(self, nombre_archivo):
+        with open(nombre_archivo, 'r') as archivo:
+            for fila, linea in enumerate(archivo):
+                for columna, caracter in enumerate(linea.strip()):
+                    if caracter == "0":
+                        self.matriz[fila][columna] = (0, 0, 0)
+                    elif caracter == "1":
+                        self.matriz[fila][columna] = (25, 111, 61)
+                    elif caracter == "2":
+                        self.matriz[fila][columna] = (192, 57, 43)
+                    elif caracter == "3":
+                        self.matriz[fila][columna] = (247, 220, 111)
+                    elif caracter == "4":
+                        self.matriz[fila][columna] = (41, 128, 185)
+                    elif caracter == "5":
+                        self.matriz[fila][columna] = (125, 60, 152)
+                    elif caracter == "6":
+                        self.matriz[fila][columna] = (230, 126, 34)
+                    elif caracter == "7":
+                        self.matriz[fila][columna] = (86, 101, 115)
+                    elif caracter == "8":
+                        self.matriz[fila][columna] = (174, 214, 241)
+                    elif caracter == "9":
+                        self.matriz[fila][columna] = (217, 136, 128)
+                    else:
+                        self.matriz[fila][columna] = COLOR_FONDO
 
 
 # Función para dibujar botones
@@ -187,8 +242,11 @@ boton_rotar_izquierda = pygame.Rect(710, 370, 50, 50)
 boton_reflejo_horizontal = pygame.Rect(640, 430, 50, 50)
 boton_reflejo_vertical = pygame.Rect(710, 430, 50, 50)
 boton_mostrar_matriz = pygame.Rect(640, 490, 50, 50)
-boton_negativo = pygame.Rect(710, 490, 50, 50)  # Nuevo botón de negativo
-boton_alto_contraste = pygame.Rect(640, 550, 50, 50)  # Botón de alto contraste
+boton_negativo = pygame.Rect(710, 490, 50, 50)
+boton_alto_contraste = pygame.Rect(640, 550, 50, 50)
+boton_guardar = pygame.Rect(710, 550, 50, 50)
+boton_cargar = pygame.Rect(730, 370, 50, 50)
+
 
 # Cargamos imagenes
 imagen_borrar = pygame.image.load("Imagenes/Borrar_icono.png")
@@ -200,6 +258,8 @@ imagen_reflejo_vertical = pygame.image.load("Imagenes/Reflejo_icono_vertical.png
 imagen_negativo = pygame.image.load("Imagenes/Negativo_icono.png")
 imagen_alto_contraste = pygame.image.load("Imagenes/Contraste_icono.png")
 imagen_matriz = pygame.image.load("Imagenes/Matriz_icono.png")
+imagen_guardar = pygame.image.load("Imagenes/Guardar_icono.png")
+imagen_cargar = pygame.image.load("Imagenes/Cargar_icono.png")
 
 # Bucle principal del juego
 corriendo = True
@@ -250,6 +310,10 @@ while corriendo:
                     pixel_art.negativo()
                 elif boton_alto_contraste.collidepoint(x, y):  # Lógica para el botón de alto contraste
                     pixel_art.alto_contraste()
+                elif boton_guardar.collidepoint(x, y):  # Lógica para el botón de guardar
+                    pixel_art.guardar_matriz("matriz_pixel_art.txt")
+                elif boton_cargar.collidepoint(x, y):
+                    pixel_art.cargar_matriz("matriz_pixel_art.txt")
                 else:
                     if x < ANCHO_VENTANA - 200:  # Asegura que el clic esté dentro de la cuadrícula
                         pixel_art.cambiar_color_pixel(x, y, color_actual)    
@@ -281,6 +345,8 @@ while corriendo:
     dibujar_boton_con_imagen(ventana, boton_mostrar_matriz, COLOR_BOTON, imagen_matriz)
     dibujar_boton_con_imagen(ventana, boton_negativo, COLOR_BOTON, imagen_negativo)
     dibujar_boton_con_imagen(ventana, boton_alto_contraste, COLOR_BOTON, imagen_alto_contraste) 
+    dibujar_boton_con_imagen(ventana, boton_guardar, COLOR_BOTON, imagen_guardar)
+    dibujar_boton_con_imagen(ventana, boton_cargar, COLOR_FONDO, imagen_cargar)
 
     # Actualizamos la pantalla
     pygame.display.flip()
