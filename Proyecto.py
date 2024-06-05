@@ -23,6 +23,7 @@ class PixelArt:
         self.matriz = [[COLOR_FONDO for _ in range(columnas)] for _ in range(filas)]
 
     def dibujar(self, pantalla):
+        # Dibuja la matriz de píxeles en la pantalla
         for fila in range(self.filas):
             for columna in range(self.columnas):
                 color = self.matriz[fila][columna]
@@ -30,29 +31,36 @@ class PixelArt:
                 pygame.draw.rect(pantalla, COLOR_CUADRICULA, (columna * TAMAÑO_PIXEL, fila * TAMAÑO_PIXEL, TAMAÑO_PIXEL, TAMAÑO_PIXEL), 1)
 
     def cambiar_color_pixel(self, x, y, color):
+        # Cambia el color de un píxel específico
         columna = x // TAMAÑO_PIXEL
         fila = y // TAMAÑO_PIXEL
         if 0 <= columna < self.columnas and 0 <= fila < self.filas:
             self.matriz[fila][columna] = color
             
     def borrar_todo(self):
+        # Borra todos los píxeles (reinicia la matriz)
         self.matriz = [[COLOR_FONDO for _ in range(self.columnas)] for _ in range(self.filas)]
         
     def rotar_derecha(self):
+        # Rota la matriz de píxeles 90 grados a la derecha
         self.matriz = [list(filas) for filas in zip(*self.matriz[::-1])]
         self.filas, self.columnas = self.columnas, self.filas
         
     def rotar_izquierda(self):
+        # Rota la matriz de píxeles 90 grados a la izquierda
         self.matriz = [list(filas) for filas in zip(*self.matriz)][::-1]
         self.filas, self.columnas = self.columnas, self.filas
         
     def reflejo_horizontal(self):
+        # Aplica un reflejo horizontal a la matriz
         self.matriz = [fila[::-1] for fila in self.matriz]
     
     def reflejo_vertical(self):
+        # Aplica un reflejo vertical a la matriz
         self.matriz = self.matriz[::-1]
         
     def convertir_a_ascii_art(self):
+        # Convierte la matriz de píxeles a arte ASCII y lo imprime en la consola al cerrar el programa
         ascii_art = ""
         for fila in range(self.columnas):
             for columna in range(self.filas):
@@ -83,6 +91,7 @@ class PixelArt:
         return ascii_art
     
     def mostrar_matriz_numerica(self):
+        # Muestra la matriz de píxeles como una representación numérica
         matriz_numerica = ""
         for fila in range(self.columnas):
             for columna in range(self.filas):
@@ -113,6 +122,7 @@ class PixelArt:
         print(matriz_numerica)
 
     def negativo(self):
+        # Aplica un efecto negativo a la matriz de píxeles
         for fila in range(self.filas):
             for columna in range(self.columnas):
                 color = self.matriz[fila][columna]
@@ -140,6 +150,7 @@ class PixelArt:
                     self.matriz[fila][columna] = (0, 0, 0)  # 0
     
     def alto_contraste(self):
+        # Aplica un efecto de alto contraste a la matriz de píxeles
         for fila in range(self.filas):
             for columna in range(self.columnas):
                 color = self.matriz[fila][columna]
@@ -149,6 +160,7 @@ class PixelArt:
                     self.matriz[fila][columna] = (217, 136, 128)  # 9
                     
     def guardar_matriz(self, nombre_archivo):
+        # Guarda la matriz de píxeles en un archivo
         with open(nombre_archivo, 'w') as archivo:
             for fila in self.matriz:
                 for color in fila:
@@ -177,6 +189,7 @@ class PixelArt:
                 archivo.write("\n")
                 
     def cargar_matriz(self, nombre_archivo):
+        # Carga la matriz de píxeles desde un archivo
         with open(nombre_archivo, 'r') as archivo:
             for fila, linea in enumerate(archivo):
                 for columna, caracter in enumerate(linea.strip()):
@@ -204,6 +217,7 @@ class PixelArt:
                         self.matriz[fila][columna] = COLOR_FONDO
                         
     def entrada_texto(self, pantalla, mensaje):
+        # Entrada de texto para guardar o cargar un archivo
         fuente = pygame.font.Font(None, 24)
         input_box = pygame.Rect(300, 268, 140, 32)
         color_inactivo = pygame.Color(217, 136, 128)
@@ -275,8 +289,6 @@ boton_color_gris = pygame.Rect(610, 430, 50, 50)
 boton_color_celeste = pygame.Rect(610, 490, 50, 50)
 boton_color_rosa = pygame.Rect(610, 550, 50, 50)
 
-
-
 boton_borrar = pygame.Rect(670, 10, 50, 50)
 boton_borrar_todo = pygame.Rect(670, 70, 50, 50)
 boton_rotar_derecha = pygame.Rect(670, 130, 50, 50)
@@ -307,13 +319,16 @@ imagen_cargar = pygame.image.load("Imagenes/Cargar_icono.png")
 corriendo = True
 color_actual = (0, 0, 0)
 
+# Bucle principal del programa
 while corriendo:
+    # Manejo de eventos
     for evento in pygame.event.get():
-        if evento.type == pygame.QUIT:
+        if evento.type == pygame.QUIT:  # Si se cierra la ventana
             corriendo = False
         elif evento.type == pygame.MOUSEBUTTONDOWN:
-            if evento.button == 1:  # Boton izquierdo del raton
+            if evento.button == 1:  # Si se presiona el botón izquierdo del ratón
                 x, y = evento.pos
+                # Comprobar si se hizo clic en alguno de los botones de colores
                 if boton_color_negro.collidepoint(x, y):
                     color_actual = (0, 0, 0)
                 elif boton_color_verde.collidepoint(x, y):
@@ -333,37 +348,38 @@ while corriendo:
                 elif boton_color_rosa.collidepoint(x, y):
                     color_actual = (217, 136, 128)
                 elif boton_color_celeste.collidepoint(x, y):
-                    color_actual = (174, 214, 241 )
-                elif boton_borrar.collidepoint(x, y):
+                    color_actual = (174, 214, 241)
+                elif boton_borrar.collidepoint(x, y):  # Botón para borrar
                     color_actual = (255, 255, 255)
-                elif boton_borrar_todo.collidepoint(x, y):
+                elif boton_borrar_todo.collidepoint(x, y):  # Botón para borrar todo
                     pixel_art.borrar_todo()
-                elif boton_rotar_derecha.collidepoint(x, y):
+                elif boton_rotar_derecha.collidepoint(x, y):  # Botón para rotar a la derecha
                     pixel_art.rotar_derecha()
-                elif boton_rotar_izquierda.collidepoint(x, y):
+                elif boton_rotar_izquierda.collidepoint(x, y):  # Botón para rotar a la izquierda
                     pixel_art.rotar_izquierda()
-                elif boton_reflejo_horizontal.collidepoint(x, y):
+                elif boton_reflejo_horizontal.collidepoint(x, y):  # Botón para reflejar horizontalmente
                     pixel_art.reflejo_horizontal()
-                elif boton_reflejo_vertical.collidepoint(x, y):
+                elif boton_reflejo_vertical.collidepoint(x, y):  # Botón para reflejar verticalmente
                     pixel_art.reflejo_vertical()
-                elif boton_mostrar_matriz.collidepoint(x, y):
+                elif boton_mostrar_matriz.collidepoint(x, y):  # Botón para mostrar la matriz numérica
                     pixel_art.mostrar_matriz_numerica()
-                elif boton_negativo.collidepoint(x, y):
+                elif boton_negativo.collidepoint(x, y):  # Botón para aplicar negativo
                     pixel_art.negativo()
-                elif boton_alto_contraste.collidepoint(x, y):
+                elif boton_alto_contraste.collidepoint(x, y):  # Botón para aplicar alto contraste
                     pixel_art.alto_contraste()
-                elif boton_guardar.collidepoint(x, y):
+                elif boton_guardar.collidepoint(x, y):  # Botón para guardar la matriz en un archivo
                     nombre_archivo = pixel_art.entrada_texto(ventana, "Nombre del archivo: ")
                     pixel_art.guardar_matriz(nombre_archivo + ".txt")
-                elif boton_cargar.collidepoint(x, y):
+                elif boton_cargar.collidepoint(x, y):  # Botón para cargar la matriz desde un archivo
                     nombre_archivo = pixel_art.entrada_texto(ventana, "Nombre del archivo: ")
                     if os.path.exists(nombre_archivo + ".txt"):
                         pixel_art.cargar_matriz(nombre_archivo + ".txt")
                     else:
                         print(f"El archivo {nombre_archivo}.txt no existe.")
                 else:
+                    # Si no se hizo clic en ningún botón, se asume que se hizo clic en la cuadrícula de píxeles
                     if x < ANCHO_VENTANA - 200:  # Asegura que el clic esté dentro de la cuadrícula
-                        pixel_art.cambiar_color_pixel(x, y, color_actual)    
+                        pixel_art.cambiar_color_pixel(x, y, color_actual)
 
 
     # Limpiamos la ventana
@@ -398,9 +414,8 @@ while corriendo:
     # Actualizamos la pantalla
     pygame.display.flip()
 
-ascii_art = pixel_art.convertir_a_ascii_art()
-
 # Imprimir en la consola
+ascii_art = pixel_art.convertir_a_ascii_art()
 print(ascii_art)
 
 # Salimos de Pygame
