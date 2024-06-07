@@ -256,6 +256,33 @@ class PixelArt:
             pygame.display.flip()
 
         return texto
+    
+    def zoom_in(self, ventana, factor_zoom):
+        # Obtener la posición del cursor en la cuadrícula
+        x, y = pygame.mouse.get_pos()
+        x //= TAMAÑO_PIXEL
+        y //= TAMAÑO_PIXEL
+
+        # Calcular el centro de la cuadrícula
+        centro_x = x
+        centro_y = y
+
+        # Aplicar el zoom
+        self.filas //= factor_zoom
+        self.columnas //= factor_zoom
+
+        # Ajustar la posición del cursor para que quede en el centro de la cuadrícula
+        self.cambiar_color_pixel(centro_x, centro_y, color_actual)
+
+        # Redibujar la cuadrícula con el nuevo tamaño
+        self.dibujar(ventana)
+        
+    def zoom_out(self):
+        # Restablecer el tamaño original de la matriz de píxeles
+        self.filas = ALTO_VENTANA // TAMAÑO_PIXEL
+        self.columnas = (ANCHO_VENTANA - 200) // TAMAÑO_PIXEL
+        # Redibujar la cuadrícula con el tamaño original
+        self.dibujar(ventana)
 
 # Función para dibujar botones
 def dibujar_boton(pantalla, rect, color, texto):
@@ -299,7 +326,10 @@ boton_mostrar_matriz = pygame.Rect(670, 370, 50, 50)
 boton_negativo = pygame.Rect(670, 430, 50, 50)
 boton_alto_contraste = pygame.Rect(670, 490, 50, 50)
 boton_guardar = pygame.Rect(670, 550, 50, 50)
+
 boton_cargar = pygame.Rect(730, 10, 50, 50)
+boton_zoom_in = pygame.Rect(730, 70, 50, 50)
+boton_zoom_out = pygame.Rect(730, 130, 50, 50)
 
 
 # Cargamos imagenes
@@ -314,6 +344,8 @@ imagen_alto_contraste = pygame.image.load("Imagenes/Contraste_icono.png")
 imagen_matriz = pygame.image.load("Imagenes/Matriz_icono.png")
 imagen_guardar = pygame.image.load("Imagenes/Guardar_icono.png")
 imagen_cargar = pygame.image.load("Imagenes/Cargar_icono.png")
+imagen_zoom_in = pygame.image.load("Imagenes/Zoom_in_icono.png")
+imagen_zoom_out = pygame.image.load("Imagenes/Zoom_out_icono.png")
 
 # Bucle principal del juego
 corriendo = True
@@ -376,6 +408,10 @@ while corriendo:
                         pixel_art.cargar_matriz(nombre_archivo + ".txt")
                     else:
                         print(f"El archivo {nombre_archivo}.txt no existe.")
+                elif boton_zoom_in.collidepoint(x, y):  # Botón de zoom
+                        pixel_art.zoom_in(ventana, 2)  # Zoom en un factor de 2
+                elif boton_zoom_out.collidepoint(x, y):  # Botón de zoom
+                        pixel_art.zoom_out()
                 else:
                     # Si no se hizo clic en ningún botón, se asume que se hizo clic en la cuadrícula de píxeles
                     if x < ANCHO_VENTANA - 200:  # Asegura que el clic esté dentro de la cuadrícula
@@ -410,6 +446,8 @@ while corriendo:
     dibujar_boton_con_imagen(ventana, boton_alto_contraste, COLOR_BOTON, imagen_alto_contraste) 
     dibujar_boton_con_imagen(ventana, boton_guardar, COLOR_BOTON, imagen_guardar)
     dibujar_boton_con_imagen(ventana, boton_cargar, COLOR_BOTON, imagen_cargar)
+    dibujar_boton_con_imagen(ventana, boton_zoom_in, COLOR_BOTON, imagen_zoom_in)
+    dibujar_boton_con_imagen(ventana, boton_zoom_out, COLOR_BOTON, imagen_zoom_out)
 
     # Actualizamos la pantalla
     pygame.display.flip()
